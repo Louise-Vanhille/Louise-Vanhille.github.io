@@ -24,3 +24,4 @@ Voorbeelden van goede en slechte commit messages:
 ## Wat met dit README-bestand?
 
 Dit mag je laten staan in de Github-repository. Je zet het echter **niet** online op je Combell-hosting.
+Ok
