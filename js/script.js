@@ -1,106 +1,78 @@
+"use strict";
+
 document.addEventListener("DOMContentLoaded", init);
 
+const PROJECTS = [{
+        name: "cdm",
+        url: "cdm.html",
+    },
+    {
+        name: "zen",
+        url: "zen.html",
+    },
+    {
+        name: "panda",
+        url: "panda.html",
+    },
+    {
+        name: "plot",
+        url: "plot.html"
+    },
+    {
+        name: "sowl",
+        url: "sowl.html"
+    }
+];
+
 function init() {
-    const now = new Date();
-    let color;
-    showTime(now);
-
-    const hour = now.getHours();
-    document.querySelector("#hour").innerText = hour;
-
-    showMessage(hour);
+    const shuffledProjects = shuffle(PROJECTS);
+    const randomProjects = shuffledProjects.slice(0, 2);
+    renderProjects(randomProjects);
 }
 
-function showTime(now) {
-    document.querySelector("#time").innerText = now.getHours().toString().padStart(2, "0") + ":" +
-        now.getMinutes().toString().padStart(2, "0") + ":" + now.getSeconds().toString().padStart(2, "0");
+function shuffle(data) {
+    return data.map(value => ({
+            value: value,
+            order: Math.random()
+        }))
+        .sort((a, b) => a.order - b.order)
+        .map(({
+            value
+        }) => value);
 }
 
-function showMessage(hour) {
-    const message = getMessage(hour);
-    const color = getColor(hour)
-    element = document.querySelector("#message")
-    element.innerText = message;
-    element.style.color = color;
-}
+function renderProjects(data) {
+    const ul = document.querySelector("#projects");
+    if (!ul) return;
+    ul.innerHTML = "";
 
-function getColor(hour) {
-    if (hour < 6) {
-        return "#6A3100"
-    } else if (hour < 12) {
-        return "#EEA922";
-    } else if (hour < 18) {
-        return "#EEA922"
-    } else {
-        return "#6A3100";
+    for (const elem of data) {
+        ul.innerHTML += `<li class="random__projects--margin">
+                          <a class="portfolio__item" href="/${elem.url}" target="_blank">
+                            <article class="portfolio__img--container">
+                              <img class="portfolio__img" src="assets/img/projects/${elem.name}/thumbnail.png" alt="${elem.name}" />
+                              <div class="portfolio__img--overlay">
+                                <img src="assets/img/icons/star.svg" alt="star" />
+                              </div>
+                              <h4>${elem.name}</h4>
+                            </article>
+                          </a>
+                        </li>`;
     }
 }
 
-function getMessage(hour) {
-    if (hour < 6) {
-        color = "dark"
-        return "donkere ⏾ magische reis";
-    } else if (hour < 12) {
-        color = "yellow"
-        return "warme ✹ magische reis";
-    } else if (hour < 18) {
-        color = "yellow"
-        return "warme ✹ magische reis!";
-    } else {
-        return "donkere ⏾ magische reis ";
-    }
-}
+const hamburger = document.querySelector('.menu__hamburger');
+const menuItems = document.querySelector('.menu__items');
+const closeButton = document.querySelector('.menu__close button');
 
-const carrousel = document.querySelector(".carrousel__container");
-const slide = document.querySelector(".carrousel__slide");
-
-function handleCarouselMove(positive = true) {
-    const slideWidth = slide.clientWidth;
-    carrousel.scrollLeft = positive ? carrousel.scrollLeft + slideWidth : carrousel.scrollLeft - slideWidth;
-}
-
-const faqQuestions = document.querySelectorAll('.option__item');
-
-faqQuestions.forEach(question => {
-    question.addEventListener('click', () => {
-        faqQuestions.forEach(item => {
-            if (item !== question) {
-                item.classList.remove('active');
-                item.nextElementSibling.style.maxHeight = null;
-            }
-        });
-
-        question.classList.toggle('active');
-
-        const answer = question.nextElementSibling;
-
-        if (answer.style.maxHeight) {
-            answer.style.maxHeight = null;
-        } else {
-            answer.style.maxHeight = answer.scrollHeight + 'px';
-        }
-    });
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  menuItems.classList.toggle('active');
 });
 
-let slideIndex = 0;
-showSlides();
-
-function showSlides() {
-    let i;
-    let slides = document.getElementsByClassName("mySlides");
-    let dots = document.getElementsByClassName("dot");
-    for (i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
-    }
-    slideIndex++;
-    if (slideIndex > slides.length) {
-        slideIndex = 1
-    }
-    for (i = 0; i < dots.length; i++) {
-        dots[i].className = dots[i].className.replace(" active", "");
-    }
-    slides[slideIndex - 1].style.display = "flex";
-    dots[slideIndex - 1].className += " active";
-    setTimeout(showSlides, 3000);
+if (closeButton && menuItems && hamburger) {
+  closeButton.addEventListener('click', () => {
+    menuItems.classList.remove('active');
+    hamburger.classList.remove('active');
+  });
 }
-
